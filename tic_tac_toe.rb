@@ -1,9 +1,9 @@
 class Game
-  attr_accessor :board, :turn, :round
+  attr_accessor :board, :player, :round
 
   def initialize
     @board = Board.new
-    @turn = 'X'
+    @player = 'X'
     @round = 1
   end
 
@@ -12,7 +12,7 @@ class Game
     until (board.victory? || round > 9)
       input_player
       board.show
-      puts "Congratulations. #{turn} won." if board.victory?
+      puts "Congratulations. #{player} won." if board.victory?
       puts "It's a draw." if round == 9 && !board.victory?
       change_player
     end
@@ -21,11 +21,11 @@ class Game
   private
 
   def input_player
-    puts "Insert the coordinates where you want to put an #{turn}."
+    puts "Insert the coordinates where you want to put an #{player}."
     loop do
       coords = gets.chomp.split('').map { |i| i.to_i - 1 }
       if valid?(coords)
-        board.insert(coords, turn)
+        board.insert(coords, player)
         break
       end
     end
@@ -44,7 +44,7 @@ class Game
   end
 
   def change_player
-    turn == 'X' ? @turn = 'O' : @turn = 'X'
+    player == 'X' ? @player = 'O' : @player = 'X'
     @round += 1
   end
 end
@@ -76,8 +76,8 @@ class Board
     board[coords[0]][coords[1]] != ' '
   end
 
-  def insert(coords, turn)
-    board[coords[0]][coords[1]] = turn
+  def insert(coords, player)
+    board[coords[0]][coords[1]] = player
   end
 
   def victory?
@@ -102,5 +102,5 @@ class Board
 end
 
 
-play = Game.new
-play.start
+# game = Game.new
+# game.start
