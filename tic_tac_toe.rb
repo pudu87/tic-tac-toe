@@ -1,4 +1,6 @@
 class Game
+  attr_accessor :board, :turn, :round
+
   def initialize
     @board = Board.new
     @turn = 'X'
@@ -6,12 +8,12 @@ class Game
   end
 
   def start
-    @board.show
-    until (@board.victory? || @round > 9)
+    board.show
+    until (board.victory? || round > 9)
       input_player
-      @board.show
-      puts "Congratulations. #{@turn} won." if @board.victory?
-      puts "It's a draw." if @round == 9
+      board.show
+      puts "Congratulations. #{turn} won." if board.victory?
+      puts "It's a draw." if round == 9 && !board.victory?
       change_player
     end
   end
@@ -19,21 +21,21 @@ class Game
   private
 
   def input_player
-    puts "Insert the coordinates where you want to put an #{@turn}."
+    puts "Insert the coordinates where you want to put an #{turn}."
     loop do
       coords = gets.chomp.split('').map { |i| i.to_i - 1 }
       if valid?(coords)
-        @board.insert(coords, @turn)
+        board.insert(coords, turn)
         break
       end
     end
   end
 
   def valid?(coords)
-    if !@board.correct_format?(coords)
+    if !board.correct_format?(coords)
       puts "Invalid input. Use the format 'XY' (row-column)."
       return false
-    elsif @board.occupied?(coords)
+    elsif board.occupied?(coords)
       puts "These coordinates are already occupied."
       return false
     else
@@ -42,24 +44,26 @@ class Game
   end
 
   def change_player
-    @turn == 'X' ? @turn = 'O' : @turn = 'X'
+    turn == 'X' ? @turn = 'O' : @turn = 'X'
     @round += 1
   end
 end
 
 
 class Board
+  attr_accessor :board
+
   def initialize
     @board = Array.new(3) { Array.new(3, ' ') }
   end
 
   def show
     puts
-    puts "#{@board[0][0]} | #{@board[0][1]} | #{@board[0][2]}"
+    puts "#{board[0][0]} | #{board[0][1]} | #{board[0][2]}"
     puts '-- --- --'
-    puts "#{@board[1][0]} | #{@board[1][1]} | #{@board[1][2]}"
+    puts "#{board[1][0]} | #{board[1][1]} | #{board[1][2]}"
     puts '-- --- --'
-    puts "#{@board[2][0]} | #{@board[2][1]} | #{@board[2][2]}"
+    puts "#{board[2][0]} | #{board[2][1]} | #{board[2][2]}"
     puts
   end
 
@@ -69,11 +73,11 @@ class Board
   end
 
   def occupied?(coords)
-    @board[coords[0]][coords[1]] != ' '
+    board[coords[0]][coords[1]] != ' '
   end
 
   def insert(coords, turn)
-    @board[coords[0]][coords[1]] = turn
+    board[coords[0]][coords[1]] = turn
   end
 
   def victory?
@@ -87,13 +91,13 @@ class Board
   end
   
   def vertical_victory?
-    horizontal_victory?(@board.transpose)
+    horizontal_victory?(board.transpose)
   end
 
   def diagonal_victory?
-    (@board[1][1] != ' ') &&
-    ((@board[0][0] == @board[1][1] && @board[1][1] == @board[2][2]) ||
-     (@board[2][0] == @board[1][1] && @board[1][1] == @board[0][2]))
+    (board[1][1] != ' ') &&
+    ((board[0][0] == board[1][1] && board[1][1] == board[2][2]) ||
+     (board[2][0] == board[1][1] && board[1][1] == board[0][2]))
   end
 end
 
