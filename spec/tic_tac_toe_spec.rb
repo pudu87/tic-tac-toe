@@ -20,3 +20,14 @@ describe Board do
     end
   end
 end
+
+describe Game do
+  describe "#valid?" do
+    it "checks if input is valid" do
+      board = double(:board)
+      expect(subject).to receive(:correct_format?).with([1,1]).and_return(true)
+      expect(board).to receive(:occupied?).with([1,1]).and_return(false)
+      expect(subject.valid?([1,1])).to eq(true)
+    end
+  end
+end

@@ -1,10 +1,11 @@
 class Game
-  attr_accessor :board, :player, :round
+  attr_accessor :board, :player, :round, :coords
 
   def initialize
     @board = Board.new
     @player = 'X'
     @round = 1
+    @coords = nil
   end
 
   def start
@@ -18,12 +19,12 @@ class Game
     end
   end
 
-  private
+  # private
 
   def input_player
     puts "Insert the coordinates where you want to put an #{player}."
     loop do
-      coords = gets.chomp.split('').map { |i| i.to_i - 1 }
+      @coords = gets.chomp.split('').map { |i| i.to_i - 1 }
       if valid?(coords)
         board.insert(coords, player)
         break
@@ -32,7 +33,7 @@ class Game
   end
 
   def valid?(coords)
-    if !board.correct_format?(coords)
+    if !correct_format?(coords)
       puts "Invalid input. Use the format 'XY' (row-column)."
       return false
     elsif board.occupied?(coords)
@@ -41,6 +42,11 @@ class Game
     else
       return true
     end
+  end
+
+  def correct_format?(coords)
+    coords.size == 2 && 
+      (0..2).include?(coords[0]) && (0..2).include?(coords[1])
   end
 
   def change_player
@@ -65,11 +71,6 @@ class Board
     puts '-- --- --'
     puts "#{board[2][0]} | #{board[2][1]} | #{board[2][2]}"
     puts
-  end
-
-  def correct_format?(coords)
-    coords.size == 2 && 
-      (0..2).include?(coords[0]) && (0..2).include?(coords[1])
   end
 
   def occupied?(coords)
