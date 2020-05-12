@@ -19,7 +19,7 @@ class Game
     end
   end
 
-  # private
+  private
 
   def input_player
     puts "Insert the coordinates where you want to put an #{player}."
